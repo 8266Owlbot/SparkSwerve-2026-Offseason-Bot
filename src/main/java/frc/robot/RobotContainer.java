@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.SubsystemCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -41,6 +42,8 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
+
+  private final SubsystemCommands subsystemCommands;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -65,6 +68,10 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOLimelight(camera0Name, drive::getRotation));
+
+        subsystemCommands =
+            new SubsystemCommands(
+                drive, () -> -controller.getLeftY(), () -> -controller.getLeftX());
         break;
 
       case SIM:
@@ -81,6 +88,10 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose));
+
+        subsystemCommands =
+            new SubsystemCommands(
+                drive, () -> -controller.getLeftY(), () -> -controller.getLeftX());
         break;
 
       default:
@@ -94,6 +105,10 @@ public class RobotContainer {
                 new ModuleIO() {});
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
+
+        subsystemCommands =
+            new SubsystemCommands(
+                drive, () -> -controller.getLeftY(), () -> -controller.getLeftX());
         break;
     }
 
@@ -147,6 +162,9 @@ public class RobotContainer {
 
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+
+    // Auto aim command
+    controller.rightTrigger().whileTrue(subsystemCommands.aimAndShoot());
 
     // Reset gyro to 0° when B button is pressed
     controller
