@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.SubsystemCommands;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -42,6 +43,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
+  private final Shooter shooter;
 
   private final SubsystemCommands subsystemCommands;
 
@@ -69,9 +71,11 @@ public class RobotContainer {
                 drive::addVisionMeasurement,
                 new VisionIOLimelight(camera0Name, drive::getRotation));
 
+        shooter = new Shooter();
+
         subsystemCommands =
             new SubsystemCommands(
-                drive, () -> -controller.getLeftY(), () -> -controller.getLeftX());
+                drive, shooter, () -> -controller.getLeftY(), () -> -controller.getLeftX());
         break;
 
       case SIM:
@@ -89,9 +93,11 @@ public class RobotContainer {
                 drive::addVisionMeasurement,
                 new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose));
 
+        shooter = new Shooter();
+
         subsystemCommands =
             new SubsystemCommands(
-                drive, () -> -controller.getLeftY(), () -> -controller.getLeftX());
+                drive, shooter, () -> -controller.getLeftY(), () -> -controller.getLeftX());
         break;
 
       default:
@@ -106,9 +112,11 @@ public class RobotContainer {
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
 
+        shooter = new Shooter();
+
         subsystemCommands =
             new SubsystemCommands(
-                drive, () -> -controller.getLeftY(), () -> -controller.getLeftX());
+                drive, shooter, () -> -controller.getLeftY(), () -> -controller.getLeftX());
         break;
     }
 
@@ -163,8 +171,14 @@ public class RobotContainer {
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
+    // Auto aim hub command
+    controller.rightTrigger().whileTrue(subsystemCommands.aimAndShoot(Landmarks.hubPosition()));
     // Auto aim command
-    controller.rightTrigger().whileTrue(subsystemCommands.aimAndShoot());
+    controller.leftBumper().whileTrue(subsystemCommands.aimAndShoot(Landmarks.allianceLeftZone()));
+    // Auto aim command
+    controller
+        .rightBumper()
+        .whileTrue(subsystemCommands.aimAndShoot(Landmarks.allianceRightZone()));
 
     // Reset gyro to 0° when B button is pressed
     controller

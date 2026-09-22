@@ -8,11 +8,34 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import java.util.Optional;
 
 public class Landmarks {
+  public static final double inicioXNeutralZone = 181.56;
+  public static final double MitadYNeutralZone = 158.32;
+
   public static Translation2d hubPosition() {
     final Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent() && alliance.get() == Alliance.Blue) {
       return new Translation2d(Inches.of(182.105), Inches.of(158.845));
     }
     return new Translation2d(Inches.of(469.115), Inches.of(158.845));
+  }
+
+  public static Translation2d allianceLeftZone() {
+    final Optional<Alliance> alliance = DriverStation.getAlliance();
+    if (alliance.isPresent() && alliance.get() == Alliance.Blue) {
+      return new Translation2d(Inches.of(27.0), Inches.of(240.71));
+    }
+    return new Translation2d(Inches.of(623.12), Inches.of(75.96));
+  }
+
+  public static Translation2d allianceRightZone() {
+    final Optional<Alliance> alliance = DriverStation.getAlliance();
+    if (alliance.isPresent() && alliance.get() == Alliance.Blue) {
+      return new Translation2d(Inches.of(27.0), Inches.of(75.96));
+    }
+    return new Translation2d(Inches.of(623.12), Inches.of(240.71));
+  }
+
+  public static Translation2d neutralLeftZone() {
+    return new Translation2d(Inches.of(181.56), Inches.of(158.32));
   }
 }
