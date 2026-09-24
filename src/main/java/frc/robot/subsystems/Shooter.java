@@ -63,7 +63,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setPercent(double percent) {
-    shooter1.set(-percent);
+    shooter2.set(percent);
+    shooter3.set(-percent);
   }
 
   public void stop() {

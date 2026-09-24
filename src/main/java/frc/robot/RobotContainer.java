@@ -199,10 +199,15 @@ public class RobotContainer {
 
     controller
         .leftTrigger()
-        .onTrue(Commands.run(() -> shooter.setPercent(1), shooter))
-        .onFalse(Commands.run(() -> shooter.stopPercent(), shooter));
-
-    controller.leftTrigger().onTrue(Commands.run(() -> indexer.set(1), indexer));
+        .onTrue(
+            Commands.parallel(
+                Commands.run(() -> shooter.setPercent(1), shooter),
+                Commands.sequence(
+                    Commands.waitSeconds(.5), Commands.run(() -> indexer.set(-1), indexer))))
+        .onFalse(
+            Commands.parallel(
+                Commands.run(() -> shooter.setPercent(0), shooter),
+                Commands.run(() -> indexer.set(0), indexer)));
 
     // Reset gyro to 0° when B button is pressed
     controller
