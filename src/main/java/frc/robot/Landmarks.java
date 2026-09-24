@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import java.util.Optional;
 
 public class Landmarks {
-  public static final double inicioXNeutralZone = 181.56;
+  // public static final Pose2d inicioXNeutralZone = new ;
   public static final double MitadYNeutralZone = 158.32;
 
   public static Translation2d hubPosition() {
@@ -36,6 +36,10 @@ public class Landmarks {
   }
 
   public static Translation2d neutralLeftZone() {
-    return new Translation2d(Inches.of(181.56), Inches.of(158.32));
+    final Optional<Alliance> alliance = DriverStation.getAlliance();
+    if (alliance.isPresent() && alliance.get() == Alliance.Blue) {
+      return new Translation2d(Inches.of(27.0), Inches.of(75.96));
+    }
+    return new Translation2d(Inches.of(623.12), Inches.of(240.71));
   }
 }

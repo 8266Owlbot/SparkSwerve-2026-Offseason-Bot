@@ -23,9 +23,9 @@ import java.util.List;
 public class Shooter extends SubsystemBase {
   private final AngularVelocity velocityTolerance = RPM.of(100);
 
-  private final TalonFX shooter1 = new TalonFX(1);
-  private final TalonFX shooter2 = new TalonFX(2);
-  private final TalonFX shooter3 = new TalonFX(3);
+  private final TalonFX shooter1 = new TalonFX(10);
+  private final TalonFX shooter2 = new TalonFX(11);
+  private final TalonFX shooter3 = new TalonFX(12);
   private final List<TalonFX> motors = List.of(shooter1, shooter2, shooter3);
   private final VelocityVoltage velocityRequest = new VelocityVoltage(0).withSlot(0);
   private final AngularVelocity freeSpeed = RPM.of(6000);
@@ -46,7 +46,7 @@ public class Shooter extends SubsystemBase {
                     .withSupplyCurrentLimitEnable(true))
             .withSlot0(
                 new Slot0Configs()
-                    .withKP(0)
+                    .withKP(0.5)
                     .withKI(0)
                     .withKD(0)
                     .withKV(12 / freeSpeed.in(RotationsPerSecond)));
@@ -55,20 +55,26 @@ public class Shooter extends SubsystemBase {
     shooter2.getConfigurator().apply(config);
     shooter3.getConfigurator().apply(config);
 
-    shooter2.setControl(new Follower(0, MotorAlignmentValue.Aligned));
-    shooter3.setControl(new Follower(0, MotorAlignmentValue.Aligned));
+    shooter3.setControl(new Follower(10, MotorAlignmentValue.Aligned));
   }
 
   public void setRPM(double rpm) {
     shooter1.setControl(velocityRequest.withVelocity(RPM.of(rpm)));
   }
 
+  public void setPercent(double percent) {
+    shooter1.set(-percent);
+  }
+
   public void stop() {
     shooter1.setControl(velocityRequest.withVelocity(RPM.of(0)));
   }
 
+  public void stopPercent() {
+    shooter1.set(0);
+  }
+
   public boolean isVelocityWithinTolerance() {
-    // final TalonFX motor;
     return motors.stream()
         .allMatch(
             motor -> {
