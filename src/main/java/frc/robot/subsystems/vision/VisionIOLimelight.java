@@ -138,6 +138,8 @@ public class VisionIOLimelight implements VisionIO {
     }
   }
 
+  // 594 mm altura
+
   /** Parses the 3D pose from a Limelight botpose array. */
   private static Pose3d parsePose(double[] rawLLArray) {
     return new Pose3d(
