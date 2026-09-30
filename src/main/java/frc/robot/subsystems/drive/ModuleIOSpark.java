@@ -98,7 +98,7 @@ public class ModuleIOSpark implements ModuleIO {
     driveConfig
         .inverted(
             switch (module) {
-              case 2 -> true;
+              case 1, 3 -> true;
               default -> false;
             })
         .idleMode(IdleMode.kBrake)
