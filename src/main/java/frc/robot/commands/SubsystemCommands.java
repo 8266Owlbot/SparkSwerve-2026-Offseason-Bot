@@ -36,8 +36,16 @@ public class SubsystemCommands extends Command {
     return Commands.parallel(
         aimAndDriveCommand,
         Commands.waitSeconds(0.25).andThen(prepareShotCommand),
-        Commands.waitUntil(
-            () -> aimAndDriveCommand.isAimed() && prepareShotCommand.isReadyToShoot()),
+        Commands.waitSeconds(1)
+            .andThen(Commands.runEnd(() -> indexer.set(-0.7), () -> indexer.set(0), indexer)));
+  }
+
+  public Command freeFire(Translation2d landMark) {
+    final PrepareShotCommand shot =
+        new PrepareShotCommand(shooter, () -> drive.getPose(), landMark);
+    return Commands.sequence(
+        Commands.run(() -> shot.execute(), shooter),
+        Commands.waitUntil(() -> shot.isReadyToShoot()),
         Commands.run(() -> indexer.feed(), indexer));
   }
 
