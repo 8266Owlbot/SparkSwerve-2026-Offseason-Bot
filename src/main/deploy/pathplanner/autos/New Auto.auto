@@ -7,7 +7,23 @@
         {
           "type": "path",
           "data": {
+<<<<<<< HEAD:src/main/deploy/pathplanner/autos/New Auto.auto
             "pathName": "New Path"
+=======
+            "pathName": "1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3"
+>>>>>>> c25401300b1c9be02e80cf66d36a601775c289ec:src/main/deploy/pathplanner/autos/Example Auto.auto
           }
         }
       ]

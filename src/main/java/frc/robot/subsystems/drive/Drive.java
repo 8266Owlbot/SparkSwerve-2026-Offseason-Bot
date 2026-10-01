@@ -91,7 +91,7 @@ public class Drive extends SubsystemBase {
         this::runVelocity,
         new PPHolonomicDriveController(
             // Traslación
-            new PIDConstants(0.85, 0.0, 0.0),
+            new PIDConstants(0.8, 0.0, 0.32),
             // Rotación
             new PIDConstants(1.95, 0.0, 0.0)),
         ppConfig,
