@@ -10,6 +10,7 @@ package frc.robot;
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -137,6 +138,8 @@ public class RobotContainer {
         break;
     }
 
+    NamedCommands.registerCommand("disparar", subsystemCommands.freeFire(Landmarks.hubPosition()));
+
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
@@ -175,21 +178,13 @@ public class RobotContainer {
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
 
-    // Lock to 0° when A button is held
-    controller
-        .a()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX(),
-                () -> Rotation2d.kZero));
-
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Auto aim hub command
-    controller.rightTrigger().whileTrue(subsystemCommands.aimAndShoot(Landmarks.hubPosition()));
+    controller
+        .rightTrigger()
+        .whileTrue((subsystemCommands.aimAndShoot(Landmarks.hubPosition())));
     // Auto aim command
     controller.leftBumper().whileTrue(subsystemCommands.aimAndShoot(Landmarks.allianceLeftZone()));
     // Auto aim command
@@ -198,10 +193,20 @@ public class RobotContainer {
         .whileTrue(subsystemCommands.aimAndShoot(Landmarks.allianceRightZone()));
 
     controller
+        .a()
+        .whileTrue(Commands.run(() -> shooter.setPercent(-1), shooter))
+        .whileFalse(Commands.run(() -> shooter.setPercent(0), shooter));
+
+    controller
+        .a()
+        .whileTrue(Commands.run(() -> indexer.set(1), indexer))
+        .whileFalse(Commands.run(() -> indexer.set(0), indexer));
+
+    controller
         .leftTrigger()
         .onTrue(
             Commands.parallel(
-                Commands.run(() -> shooter.setPercent(1), shooter),
+                Commands.run(() -> shooter.setPercent(-1), shooter),
                 Commands.sequence(
                     Commands.waitSeconds(.5), Commands.run(() -> indexer.set(-1), indexer))))
         .onFalse(
