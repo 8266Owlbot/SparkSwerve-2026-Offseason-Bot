@@ -28,6 +28,7 @@ public class SubsystemCommands extends Command {
     this.leftInput = leftInput;
   }
 
+  // Comando de autoapuntado y disparo
   public Command aimAndShoot(Translation2d landMark) {
     final AimAndDriveCommand aimAndDriveCommand =
         new AimAndDriveCommand(drive, fordwardInput, leftInput, landMark);
@@ -35,21 +36,31 @@ public class SubsystemCommands extends Command {
         new PrepareShotCommand(shooter, () -> drive.getPose(), landMark);
     return Commands.parallel(
         aimAndDriveCommand,
-        Commands.waitSeconds(0.25).andThen(prepareShotCommand),
-        Commands.waitSeconds(1)
-            .andThen(Commands.runEnd(() -> indexer.set(-0.7), () -> indexer.set(0), indexer)));
+        prepareShotCommand,
+        Commands.waitSeconds(1).andThen(Commands.runOnce(() -> indexer.set(-1), indexer)));
+  } // tirale bien chido
+  // fermayen?sarabia?fundita
+  // fermayenrunningbackmexicanodeborregosmonterrey
+
+  // Comando para recoger combustible
+  public Command intakeing() {
+    return Commands.parallel(
+        Commands.runOnce(() -> shooter.setRPM(5000), shooter),
+        Commands.runOnce(() -> indexer.set(1), indexer));
   }
 
+  // Comando de disparo en autonomo sin auto apuntado
   public Command freeFire(Translation2d landMark) {
-    final PrepareShotCommand shot =
+    final PrepareShotCommand prepareShotCommand =
         new PrepareShotCommand(shooter, () -> drive.getPose(), landMark);
-    return Commands.sequence(
-        Commands.run(() -> shot.execute(), shooter),
-        Commands.waitUntil(() -> shot.isReadyToShoot()),
-        Commands.run(() -> indexer.feed(), indexer));
+    return Commands.parallel(
+        prepareShotCommand,
+        Commands.waitSeconds(1).andThen(Commands.runOnce(() -> indexer.feed(), indexer)));
   }
 
   public Command stop() {
-    return Commands.run(() -> indexer.stopFeed(), indexer);
+    return Commands.parallel(
+        Commands.runOnce(() -> shooter.setRPM(0), shooter),
+        Commands.runOnce(() -> indexer.set(0), indexer));
   }
 }

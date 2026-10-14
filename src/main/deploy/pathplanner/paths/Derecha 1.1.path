@@ -3,35 +3,52 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.159,
-        "y": 5.77
+        "x": 3.554,
+        "y": 0.7
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.174944444444446,
-        "y": 6.042355555555555
+        "x": 4.553999999999995,
+        "y": 0.7
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.959277777777778,
-        "y": 4.853533333333332
+        "x": 7.715,
+        "y": 0.7
       },
       "prevControl": {
-        "x": 3.7096,
-        "y": 5.379733333333333
+        "x": 7.485709371131843,
+        "y": 0.600371653063772
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.309161793372317,
+      "rotationDegrees": 90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "recoger",
+      "waypointRelativePos": 0.697235023041473,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "recoger"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -42,13 +59,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -30.579226872488995
+    "rotation": -90.0
   },
   "reversed": false,
-  "folder": "Auto Izquierda 1",
+  "folder": "Auto Derecha",
   "idealStartingState": {
-    "velocity": 2.0,
-    "rotation": 90.0
+    "velocity": 0,
+    "rotation": 73.028
   },
   "useDefaultConstraints": true
 }
