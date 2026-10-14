@@ -1,0 +1,125 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.715,
+        "y": 2.213
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.465505309928679,
+        "y": 2.197112910077187
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.749866666666668,
+        "y": 2.213
+      },
+      "prevControl": {
+        "x": 7.0422,
+        "y": 2.339466666666666
+      },
+      "nextControl": {
+        "x": 6.392129689720773,
+        "y": 2.0582389862562462
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.307688888888889,
+        "y": 0.6634222222222217
+      },
+      "prevControl": {
+        "x": 5.835353472222223,
+        "y": 0.7139472222222218
+      },
+      "nextControl": {
+        "x": 4.780024305555556,
+        "y": 0.6128972222222215
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.4075222222222226,
+        "y": 0.6634222222222217
+      },
+      "prevControl": {
+        "x": 3.657522222222223,
+        "y": 0.6634222222222217
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 2.7426900584795297,
+      "rotationDegrees": 0.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.9857142857142619,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "detener",
+      "waypointRelativePos": 1.3672811059907455,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "detener"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 66.65043281467024
+  },
+  "reversed": false,
+  "folder": "Auto Derecha",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -90.0
+  },
+  "useDefaultConstraints": true
+}

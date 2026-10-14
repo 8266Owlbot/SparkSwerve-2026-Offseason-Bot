@@ -16,7 +16,7 @@ public class Landmarks {
     if (alliance.isPresent() && alliance.get() == Alliance.Blue) {
       return new Translation2d(Inches.of(175.105), Inches.of(158.845));
     }
-    return new Translation2d(Inches.of(469.115), Inches.of(158.845));
+    return new Translation2d(Inches.of(470.624), Inches.of(158.845));
   }
 
   public static Translation2d allianceLeftZone() {

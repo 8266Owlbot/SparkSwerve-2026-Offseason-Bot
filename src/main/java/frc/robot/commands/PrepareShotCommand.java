@@ -26,9 +26,10 @@ public class PrepareShotCommand extends Command {
                       .interpolate(startValue.shooterRPM, endValue.shooterRPM, t)));
 
   static {
-    distanceToShotMap.put(Inches.of(100), new Shot(5000));
-    distanceToShotMap.put(Inches.of(200), new Shot(6000));
-    distanceToShotMap.put(Inches.of(0), new Shot(0));
+    distanceToShotMap.put(Inches.of(80), new Shot(4100));
+    distanceToShotMap.put(Inches.of(120), new Shot(4300));
+    distanceToShotMap.put(Inches.of(130), new Shot(4500));
+    distanceToShotMap.put(Inches.of(160), new Shot(5700));
   }
 
   private final Shooter shooter;

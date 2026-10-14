@@ -32,7 +32,7 @@ public class AimAndDriveCommand extends Command {
 
     this.thetaController = new PIDController(3, 0, 0);
     this.thetaController.enableContinuousInput(-Math.PI, Math.PI);
-    this.thetaController.setTolerance(Units.degreesToRadians(3.0));
+    this.thetaController.setTolerance(Units.degreesToRadians(10));
 
     addRequirements(drive);
   }

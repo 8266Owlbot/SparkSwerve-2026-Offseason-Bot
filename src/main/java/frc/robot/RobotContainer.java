@@ -138,7 +138,18 @@ public class RobotContainer {
         break;
     }
 
-    NamedCommands.registerCommand("disparar", subsystemCommands.freeFire(Landmarks.hubPosition()));
+    NamedCommands.registerCommand(
+        "disparar al hub 1", Commands.runOnce(() -> shooter.setRPM(4500), shooter).withTimeout(5));
+    NamedCommands.registerCommand(
+        "disparar al hub 2", Commands.runOnce(() -> shooter.setRPM(4000), shooter).withTimeout(5));
+    NamedCommands.registerCommand(
+        "disparar al hub con auto apuntado",
+        subsystemCommands.aimAndShoot(Landmarks.hubPosition()).withTimeout(4));
+    NamedCommands.registerCommand("detener", subsystemCommands.stop());
+    NamedCommands.registerCommand(
+        "recoger",
+        subsystemCommands.intakeing().withTimeout(7).finallyDo(() -> subsystemCommands.stop()));
+    NamedCommands.registerCommand("llenar", Commands.run(() -> indexer.set(-1)).withTimeout(4));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -184,35 +195,40 @@ public class RobotContainer {
     // Auto aim hub command
     controller
         .rightTrigger()
-        .whileTrue((subsystemCommands.aimAndShoot(Landmarks.hubPosition())));
-    // Auto aim command
-    controller.leftBumper().whileTrue(subsystemCommands.aimAndShoot(Landmarks.allianceLeftZone()));
-    // Auto aim command
-    controller
-        .rightBumper()
-        .whileTrue(subsystemCommands.aimAndShoot(Landmarks.allianceRightZone()));
-
-    controller
-        .a()
-        .whileTrue(Commands.run(() -> shooter.setPercent(-1), shooter))
-        .whileFalse(Commands.run(() -> shooter.setPercent(0), shooter));
-
-    controller
-        .a()
-        .whileTrue(Commands.run(() -> indexer.set(1), indexer))
-        .whileFalse(Commands.run(() -> indexer.set(0), indexer));
+        .onTrue((subsystemCommands.aimAndShoot(Landmarks.hubPosition())))
+        .onFalse(subsystemCommands.stop());
 
     controller
         .leftTrigger()
         .onTrue(
             Commands.parallel(
-                Commands.run(() -> shooter.setPercent(-1), shooter),
-                Commands.sequence(
-                    Commands.waitSeconds(.5), Commands.run(() -> indexer.set(-1), indexer))))
+                Commands.run(() -> shooter.setRPM(4100), shooter),
+                Commands.waitSeconds(1).andThen(Commands.run(() -> indexer.set(-1), indexer))))
         .onFalse(
             Commands.parallel(
-                Commands.run(() -> shooter.setPercent(0), shooter),
-                Commands.run(() -> indexer.set(0), indexer)));
+                Commands.runOnce(() -> shooter.setRPM(0), shooter),
+                Commands.runOnce(() -> indexer.set(0), indexer)));
+
+    controller.leftBumper().whileTrue(subsystemCommands.intakeing());
+
+    // Auto aim right trench command
+    controller.leftBumper().whileTrue(subsystemCommands.aimAndShoot(Landmarks.allianceLeftZone()));
+
+    // Auto aim left trench command
+    controller
+        .rightBumper()
+        .whileTrue(subsystemCommands.aimAndShoot(Landmarks.allianceRightZone()))
+        .whileTrue(subsystemCommands.stop());
+
+    controller
+        .a()
+        .whileTrue(Commands.run(() -> shooter.setRPM(5000), shooter))
+        .whileFalse(Commands.run(() -> shooter.setRPM(0), shooter));
+
+    controller
+        .a()
+        .whileTrue(Commands.run(() -> indexer.set(1), indexer))
+        .whileFalse(Commands.run(() -> indexer.set(0), indexer));
 
     // Reset gyro to 0° when B button is pressed
     controller
@@ -224,6 +240,9 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                     drive)
                 .ignoringDisable(true));
+
+    controller.povUp().whileTrue(shooter.sysIdQuasystic(SysIdRoutine.Direction.kForward));
+    controller.povDown().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
   }
 
   /**
