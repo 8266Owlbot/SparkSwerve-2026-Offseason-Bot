@@ -46,6 +46,8 @@ public class AimAndDriveCommand extends Command {
     Pose2d robotPose = drive.getPose();
     Rotation2d desiredAngle = shootGoal.minus(robotPose.getTranslation()).getAngle();
 
+    if (robotPose.getX() == 1 && robotPose.getY() >= 1) {}
+
     double velocityRotation =
         thetaController.calculate(robotPose.getRotation().getRadians(), desiredAngle.getRadians());
 

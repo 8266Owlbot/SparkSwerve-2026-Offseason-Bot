@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import java.util.List;
 import org.littletonrobotics.junction.Logger;
 
-public class Shooter extends SubsystemBase {
+public class ShooterTalonFX extends SubsystemBase {
   private final AngularVelocity velocityTolerance = RPM.of(200);
 
   private final TalonFX shooter1 = new TalonFX(10);
@@ -42,7 +42,7 @@ public class Shooter extends SubsystemBase {
   private final VoltageOut sysIdControl = new VoltageOut(0);
   private final AngularVelocity freeSpeed = RPM.of(6000);
 
-  public Shooter() {
+  public ShooterTalonFX() {
     final TalonFXConfiguration talonConfig =
         new TalonFXConfiguration()
             .withMotorOutput(

@@ -24,8 +24,8 @@ public class Indexer extends SubsystemBase {
   private final TalonFX indexer1 = new TalonFX(13);
   private final TalonFX indexer2 = new TalonFX(14);
 
-  private final SparkMax floor1 = new SparkMax(15, MotorType.kBrushless);
-  private final SparkMax floor2 = new SparkMax(17, MotorType.kBrushless);
+  private final SparkMax floor1 = new SparkMax(20, MotorType.kBrushless);
+  private final SparkMax floor2 = new SparkMax(21, MotorType.kBrushless);
 
   public Indexer() {
     final TalonFXConfiguration config =

@@ -10,7 +10,6 @@ package frc.robot;
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -20,9 +19,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.SubsystemCommands;
 import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterSpark;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -45,10 +43,10 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
-  private final Shooter shooter;
+  private final ShooterSpark shooterTalonFX;
   private final Indexer indexer;
 
-  private final SubsystemCommands subsystemCommands;
+  // private final SubsystemCommands subsystemCommands;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -74,16 +72,16 @@ public class RobotContainer {
                 drive::addVisionMeasurement,
                 new VisionIOLimelight(camera0Name, drive::getRotation));
 
-        shooter = new Shooter();
+        shooterTalonFX = new ShooterSpark();
         indexer = new Indexer();
 
-        subsystemCommands =
-            new SubsystemCommands(
-                drive,
-                shooter,
-                indexer,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX());
+        // subsystemCommands =
+        // new SubsystemCommands(
+        //    drive,
+        //    shooterTalonFX,
+        //    indexer,
+        //    () -> -controller.getLeftY(),
+        //    () -> -controller.getLeftX());
         break;
 
       case SIM:
@@ -101,16 +99,16 @@ public class RobotContainer {
                 drive::addVisionMeasurement,
                 new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose));
 
-        shooter = new Shooter();
+        shooterTalonFX = new ShooterSpark();
         indexer = new Indexer();
 
-        subsystemCommands =
-            new SubsystemCommands(
-                drive,
-                shooter,
-                indexer,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX());
+        // subsystemCommands =
+        // new SubsystemCommands(
+        //    drive,
+        //    shooterTalonFX,
+        //    indexer,
+        //    () -> -controller.getLeftY(),
+        //    () -> -controller.getLeftX());
         break;
 
       default:
@@ -125,31 +123,33 @@ public class RobotContainer {
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {});
 
-        shooter = new Shooter();
+        shooterTalonFX = new ShooterSpark();
         indexer = new Indexer();
 
-        subsystemCommands =
-            new SubsystemCommands(
-                drive,
-                shooter,
-                indexer,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX());
+        // subsystemCommands =
+        // new SubsystemCommands(
+        //    drive,
+        //    shooterTalonFX,
+        //    indexer,
+        //    () -> -controller.getLeftY(),
+        //    () -> -controller.getLeftX());
         break;
     }
 
-    NamedCommands.registerCommand(
-        "disparar al hub 1", Commands.runOnce(() -> shooter.setRPM(4500), shooter).withTimeout(5));
-    NamedCommands.registerCommand(
-        "disparar al hub 2", Commands.runOnce(() -> shooter.setRPM(4000), shooter).withTimeout(5));
-    NamedCommands.registerCommand(
-        "disparar al hub con auto apuntado",
-        subsystemCommands.aimAndShoot(Landmarks.hubPosition()).withTimeout(4));
-    NamedCommands.registerCommand("detener", subsystemCommands.stop());
-    NamedCommands.registerCommand(
-        "recoger",
-        subsystemCommands.intakeing().withTimeout(7).finallyDo(() -> subsystemCommands.stop()));
-    NamedCommands.registerCommand("llenar", Commands.run(() -> indexer.set(-1)).withTimeout(4));
+    // NamedCommands.registerCommand(
+    //    "disparar al hub 1", Commands.runOnce(() -> shooterTalonFX.setRPM(4500),
+    // shooterTalonFX).withTimeout(5));
+    // NamedCommands.registerCommand(
+    //    "disparar al hub 2", Commands.runOnce(() -> shooterTalonFX.setRPM(4000),
+    // shooterTalonFX).withTimeout(5));
+    // NamedCommands.registerCommand(
+    //    "disparar al hub con auto apuntado",
+    //    subsystemCommands.aimAndShoot(Landmarks.hubPosition()).withTimeout(4));
+    // NamedCommands.registerCommand("detener", subsystemCommands.stop());
+    // NamedCommands.registerCommand(
+    //    "recoger",
+    //    subsystemCommands.intakeing().withTimeout(7).finallyDo(() -> subsystemCommands.stop()));
+    // NamedCommands.registerCommand("llenar", Commands.run(() -> indexer.set(-1)).withTimeout(4));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -192,39 +192,25 @@ public class RobotContainer {
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
-    // Auto aim hub command
-    controller
-        .rightTrigger()
-        .onTrue((subsystemCommands.aimAndShoot(Landmarks.hubPosition())))
-        .onFalse(subsystemCommands.stop());
-
+    // Disparar
     controller
         .leftTrigger()
         .onTrue(
             Commands.parallel(
-                Commands.run(() -> shooter.setRPM(4100), shooter),
+                Commands.run(() -> shooterTalonFX.setPercent(-1), shooterTalonFX),
                 Commands.waitSeconds(1).andThen(Commands.run(() -> indexer.set(-1), indexer))))
         .onFalse(
             Commands.parallel(
-                Commands.runOnce(() -> shooter.setRPM(0), shooter),
+                Commands.runOnce(() -> shooterTalonFX.setPercent(0), shooterTalonFX),
                 Commands.runOnce(() -> indexer.set(0), indexer)));
 
-    controller.leftBumper().whileTrue(subsystemCommands.intakeing());
-
-    // Auto aim right trench command
-    controller.leftBumper().whileTrue(subsystemCommands.aimAndShoot(Landmarks.allianceLeftZone()));
-
-    // Auto aim left trench command
+    // Recoger del piso
     controller
-        .rightBumper()
-        .whileTrue(subsystemCommands.aimAndShoot(Landmarks.allianceRightZone()))
-        .whileTrue(subsystemCommands.stop());
+       .a()
+       .whileTrue(Commands.run(() -> shooterTalonFX.setPercent(-1), shooterTalonFX))
+       .whileFalse(Commands.run(() -> shooterTalonFX.setPercent(0), shooterTalonFX));
 
-    controller
-        .a()
-        .whileTrue(Commands.run(() -> shooter.setRPM(5000), shooter))
-        .whileFalse(Commands.run(() -> shooter.setRPM(0), shooter));
-
+    // Recoger del piso
     controller
         .a()
         .whileTrue(Commands.run(() -> indexer.set(1), indexer))
@@ -241,8 +227,8 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    controller.povUp().whileTrue(shooter.sysIdQuasystic(SysIdRoutine.Direction.kForward));
-    controller.povDown().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // controller.povUp().whileTrue(shooterTalonFX.sysIdQuasystic(SysIdRoutine.Direction.kForward));
+    // controller.povDown().whileTrue(shooterTalonFX.sysIdDynamic(SysIdRoutine.Direction.kForward));
   }
 
   /**

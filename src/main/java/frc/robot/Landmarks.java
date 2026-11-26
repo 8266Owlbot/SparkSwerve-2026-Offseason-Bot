@@ -8,15 +8,13 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import java.util.Optional;
 
 public class Landmarks {
-  // public static final Pose2d inicioXNeutralZone = new ;
-  public static final double MitadYNeutralZone = 158.32;
 
   public static Translation2d hubPosition() {
     final Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent() && alliance.get() == Alliance.Blue) {
-      return new Translation2d(Inches.of(175.105), Inches.of(158.845));
+      return new Translation2d(Inches.of(165.105), Inches.of(150.845));
     }
-    return new Translation2d(Inches.of(470.624), Inches.of(158.845));
+    return new Translation2d(Inches.of(470.624), Inches.of(150.845));
   }
 
   public static Translation2d allianceLeftZone() {

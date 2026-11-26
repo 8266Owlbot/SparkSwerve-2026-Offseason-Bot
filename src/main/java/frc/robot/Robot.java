@@ -8,6 +8,8 @@
 package frc.robot;
 
 import com.revrobotics.util.StatusLogger;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -93,6 +95,39 @@ public class Robot extends LoggedRobot {
 
     // Return to non-RT thread priority (do not modify the first argument)
     // Threads.setCurrentThreadPriority(false, 10);
+
+    double matchTime = DriverStation.getMatchTime();
+
+    double shiftTimeLeft = 0.0;
+    String currentShift = "UNKNOWN";
+
+    if (DriverStation.isAutonomous()) {
+      currentShift = "AUTO";
+      shiftTimeLeft = matchTime;
+    } else if (DriverStation.isTeleop()) {
+      if (matchTime > 130.0) {
+        currentShift = "TRANSITION";
+        shiftTimeLeft = matchTime - 130.0; // Restante de los 10s
+      } else if (matchTime > 105.0) {
+        currentShift = "TURNO 1";
+        shiftTimeLeft = matchTime - 105.0; // Restante de los 25s
+      } else if (matchTime > 80.0) {
+        currentShift = "TURNO 2";
+        shiftTimeLeft = matchTime - 80.0; // Restante de los 25s
+      } else if (matchTime > 55.0) {
+        currentShift = "TURNO 3";
+        shiftTimeLeft = matchTime - 55.0; // Restante de los 25s
+      } else if (matchTime > 30.0) {
+        currentShift = "TURNO 4";
+        shiftTimeLeft = matchTime - 30.0; // Restante de los 25s
+      } else {
+        currentShift = "ENDGAME";
+        shiftTimeLeft = matchTime; // Restante de los 30s
+      }
+    }
+    SmartDashboard.putString("Match/Turno Actual", currentShift);
+    SmartDashboard.putNumber("Match/Tiempo Restante Turno", Math.max(0.0, shiftTimeLeft));
+    SmartDashboard.putNumber("Match/Tiempo Total Partido", matchTime);
   }
 
   /** This function is called once when the robot is disabled. */
