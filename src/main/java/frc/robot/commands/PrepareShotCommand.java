@@ -11,7 +11,7 @@ import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterTalonFX;
 import java.util.function.Supplier;
 
 public class PrepareShotCommand extends Command {
@@ -26,18 +26,18 @@ public class PrepareShotCommand extends Command {
                       .interpolate(startValue.shooterRPM, endValue.shooterRPM, t)));
 
   static {
-    distanceToShotMap.put(Inches.of(80), new Shot(4100));
-    distanceToShotMap.put(Inches.of(120), new Shot(4300));
-    distanceToShotMap.put(Inches.of(130), new Shot(4500));
+    distanceToShotMap.put(Inches.of(80), new Shot(4000));
+    distanceToShotMap.put(Inches.of(120), new Shot(4400));
+    distanceToShotMap.put(Inches.of(130), new Shot(4600));
     distanceToShotMap.put(Inches.of(160), new Shot(5700));
   }
 
-  private final Shooter shooter;
+  private final ShooterTalonFX shooter;
   private final Supplier<Pose2d> robotPoseSupplier;
   private final Translation2d landmarks;
 
   public PrepareShotCommand(
-      Shooter shooter, Supplier<Pose2d> robotPoseSupplier, Translation2d landmarks) {
+      ShooterTalonFX shooter, Supplier<Pose2d> robotPoseSupplier, Translation2d landmarks) {
     this.shooter = shooter;
     this.robotPoseSupplier = robotPoseSupplier;
     this.landmarks = landmarks;

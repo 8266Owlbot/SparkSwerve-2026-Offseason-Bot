@@ -4,20 +4,20 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterTalonFX;
 import frc.robot.subsystems.drive.Drive;
 import java.util.function.DoubleSupplier;
 
 public class SubsystemCommands extends Command {
   private final Drive drive;
-  private final Shooter shooter;
+  private final ShooterTalonFX shooter;
   private final Indexer indexer;
   private final DoubleSupplier fordwardInput;
   private final DoubleSupplier leftInput;
 
   public SubsystemCommands(
       Drive drive,
-      Shooter shooter,
+      ShooterTalonFX shooter,
       Indexer indexer,
       DoubleSupplier fordwardInput,
       DoubleSupplier leftInput) {
@@ -38,7 +38,9 @@ public class SubsystemCommands extends Command {
         aimAndDriveCommand,
         prepareShotCommand,
         Commands.waitSeconds(1).andThen(Commands.runOnce(() -> indexer.set(-1), indexer)));
-  } // tirale bien chido
+  }
+
+  // tirale bien chido
   // fermayen?sarabia?fundita
   // fermayenrunningbackmexicanodeborregosmonterrey
 
